@@ -1,7 +1,24 @@
 import { Button, Container, Modal, Form, Row, Col, Accordion, ListGroup } from "react-bootstrap/";
 import { useState } from "react";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { checkToken } from "../Services/DataService";
 
 const Dashboard = () => {
+
+  let navigate = useNavigate();
+
+  useEffect(() => {
+    //useEffect is the first thing that fires on load 
+    //put any logic we want to fire on onload
+    //our effect will fire if we have a change in the state in our dependancy
+    //rerouting the user to the Login page if no user Token
+    if(!checkToken())
+    {
+      navigate("/Login");
+    }
+   
+  }, [])
 
   //functions
   const handleSetTitle = (e) => setBlogTitle(e.target.value)
