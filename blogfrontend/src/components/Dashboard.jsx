@@ -42,6 +42,39 @@ const Dashboard = () => {
       setBlogCategory('Fitness')
     }
   };
+  const handleSaveWithPublish = () =>{
+
+    const Published = {
+      Id: 0,
+      UserId: 0,
+      PublisherName: '',
+      Title: blogTitle,
+      Image: blogImage,
+      Description: blogDescription,
+      Date: new Date(),
+      Category: blogCategory,
+      Tag: blogTags,
+      IsPublished: true,
+      IsDeleted: false
+    }
+
+  }
+  const handleSaveWithUnpublish = () =>{
+
+    const notPublished = {
+      Id: 0,
+      UserId: 0,
+      PublisherName: '',
+      Title: '',
+      Tag:'',
+      Image: '',
+      Description: '',
+      Date:'',
+      Category: '',
+      IsPublished: true,
+      IsDeleted: false
+    }
+  }
 
   //create useStaes for our forms
   const [blogTitle, setBlogTitle] = useState('');
@@ -49,6 +82,13 @@ const Dashboard = () => {
   const [blogDescription, setBlogDescription] = useState('');
   const [blogCategory, setBlogCategory] = useState('');
   const [blogTags, setBlogTags] = useState('');
+  const [userId, setuserId] = useState(0);
+  const [PublisherName, setPublisherName] = useState('');
+  
+  //bools
+  const [show, setShow] = useState(false);
+  const [edit, setEdit] = useState(false);
+  
   const [blogItems, setBlogItems] = useState([
     {
       Id: 1,
@@ -102,10 +142,6 @@ const Dashboard = () => {
       Published: false
     },
   ]);
-  
-  //bools
-  const [show, setShow] = useState(false);
-  const [edit, setEdit] = useState(false);
 
 
   return (
@@ -161,10 +197,10 @@ const Dashboard = () => {
             <Button variant="outline-secondary" onClick={handleClose}>
               Cancel
             </Button>
-            <Button variant="outline-primary" onClick={handleClose}>
+            <Button variant="outline-primary" onClick={handleSaveWithPublish}>
               {edit ? 'Save Changes' : 'Save'}
             </Button>
-            <Button variant="outline-primary" onClick={handleClose}>
+            <Button variant="outline-primary" onClick={handleSaveWithUnpublish}>
             {edit ? 'Save Changes' : 'Save'} and Publish
             </Button>
           </Modal.Footer>
