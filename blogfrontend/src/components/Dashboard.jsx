@@ -2,7 +2,7 @@ import { Button, Container, Modal, Form, Row, Col, Accordion, ListGroup } from "
 import { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { checkToken } from "../Services/DataService";
+import { LoggedInData, checkToken } from "../Services/DataService";
 
 const Dashboard = () => {
 
@@ -17,6 +17,8 @@ const Dashboard = () => {
     {
       navigate("/Login");
     }
+    let userInfo = LoggedInData();
+    console.log(userInfo);
    
   }, [])
 
@@ -25,7 +27,7 @@ const Dashboard = () => {
   const handleDescription = (e) => setBlogDescription(e.target.value)
   const handleTag = (e) => setBlogTags(e.target.value)
   const handleCategory = (e) => setBlogCategory(e.target.value)
-  const handleImage = (e) => setBlogImage(e.target.value)
+  // const handleSaveImage = ({target}) => setBlogImage(target.files[0])
   const handleClose = () => setShow(false);
   const handleShow = (e) => {
     setShow(true)
@@ -42,39 +44,7 @@ const Dashboard = () => {
       setBlogCategory('Fitness')
     }
   };
-  const handleSaveWithPublish = () =>{
-
-    const Published = {
-      Id: 0,
-      UserId: 0,
-      PublisherName: '',
-      Title: blogTitle,
-      Image: blogImage,
-      Description: blogDescription,
-      Date: new Date(),
-      Category: blogCategory,
-      Tag: blogTags,
-      IsPublished: true,
-      IsDeleted: false
-    }
-
-  }
-  const handleSaveWithUnpublish = () =>{
-
-    const notPublished = {
-      Id: 0,
-      UserId: 0,
-      PublisherName: '',
-      Title: '',
-      Tag:'',
-      Image: '',
-      Description: '',
-      Date:'',
-      Category: '',
-      IsPublished: true,
-      IsDeleted: false
-    }
-  }
+  
 
   //create useStaes for our forms
   const [blogTitle, setBlogTitle] = useState('');
@@ -82,8 +52,8 @@ const Dashboard = () => {
   const [blogDescription, setBlogDescription] = useState('');
   const [blogCategory, setBlogCategory] = useState('');
   const [blogTags, setBlogTags] = useState('');
-  const [userId, setuserId] = useState(0);
-  const [PublisherName, setPublisherName] = useState('');
+  // const [userId, setuserId] = useState(0);
+  // const [Publishername, setPublishername] = useState('');
   
   //bools
   const [show, setShow] = useState(false);
@@ -143,6 +113,61 @@ const Dashboard = () => {
     },
   ]);
 
+  const handleSaveWithPublish = () =>{
+
+    console.log('clicked')
+
+    let {publisherName, userId} = LoggedInData();
+
+    const Published = {
+      Id: 0,
+      UserId: userId,
+      PublisherName: publisherName,
+      Title: blogTitle,
+      Image: blogImage,
+      Description: blogDescription,
+      Date: new Date(),
+      Category: blogCategory,
+      Tag: blogTags,
+      IsPublished: true,
+      IsDeleted: false
+    }
+   
+    console.log(Published)
+    handleClose();
+
+
+  }
+  const handleSaveWithUnpublish = () =>{
+
+    let {publisherName, userId} = LoggedInData();
+
+    const notPublished = {
+      Id: 0,
+      UserId: userId,
+      PublisherName: publisherName,
+      Title: blogTitle,
+      Image: blogImage,
+      Description: blogDescription,
+      Date: new Date(),
+      Category: blogCategory,
+      Tag: blogTags,
+      IsPublished: false,
+      IsDeleted: false
+    }
+    console.log(notPublished)
+    handleClose();
+  }
+
+  const handleImage = async (e) =>{
+    let file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      console.log(reader.result)
+    }
+    reader.readAsDataURL(file);
+  }
+
 
   return (
     <>
@@ -187,7 +212,7 @@ const Dashboard = () => {
 
               <Form.Group className="mb-3" controlId="Image">
                 <Form.Label>Pick an Image</Form.Label>
-                <Form.Control type="file" placeholder="SeleteImage from file" accept="image/png, image/jpg" value={blogImage} onChange={handleImage}/>
+                <Form.Control type="file" placeholder="SeleteImage from file" accept="image/png, image/jpg"  onChange={handleImage}/>
               </Form.Group>
 
              
@@ -197,10 +222,10 @@ const Dashboard = () => {
             <Button variant="outline-secondary" onClick={handleClose}>
               Cancel
             </Button>
-            <Button variant="outline-primary" onClick={handleSaveWithPublish}>
+            <Button variant="outline-primary" onClick={handleSaveWithUnpublish}>
               {edit ? 'Save Changes' : 'Save'}
             </Button>
-            <Button variant="outline-primary" onClick={handleSaveWithUnpublish}>
+            <Button variant="outline-primary" onClick={handleSaveWithPublish}>
             {edit ? 'Save Changes' : 'Save'} and Publish
             </Button>
           </Modal.Footer>
