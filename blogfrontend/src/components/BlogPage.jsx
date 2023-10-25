@@ -1,96 +1,62 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Image } from "react-bootstrap";
+import { getPublishedBlogItems } from "../Services/DataService";
 
 const BlogPage = () => {
-  const [blogItems, setBlogItems] = useState([
-    {
-      Id: 1,
-      Title: "Top Finishing and Crossing Drills",
-      Publisher: "anonymous",
-      Date: "01-13-2022",
-      Text: "Developing finishing and crossing skills is an important aspect of soccer that can greatly constribute to your player.",
-      Image: "./assets/Images/3soccerballs.jpg",
-      Published: true,
-    },
-    {
-      Id: 2,
-      Title: "6 Soccer Drills to Work on Defense",
-      Publisher: "anonymous",
-      Date: "01-14-2022",
-      Text: "A strong defense is the backbone of any successful soccer team",
-      Image: "./assets/Images/3soccerballs.jpg",
-      Published: true,
-    },
-    {
-      Id: 3,
-      Title: "5 Small Side Games",
-      Publisher: "anonymous",
-      Date: "01-15-2022",
-      Text: "Small-sided games create a fast-paced and intense environment.",
-      Image: "./assets/Images/3soccerballs.jpg",
-      Published: true,
-    },
-    {
-      Id: 4,
-      Title: "5 Fun 1 V 1 Youth Soccer Activites",
-      Publisher: "anonymous",
-      Date: "01-15-2022",
-      Text: "One of the best ways to naturally bring out the competitive nature.",
-      Image: "./assets/Images/3soccerballs.jpg",
-      Published: false,
-    },
-    {
-      Id: 5,
-      Title: "5 Fun warm up soccer drills",
-      Publisher: "anonymous",
-      Date: "01-15-2022",
-      Text: "One of the challenges for youth soccer coaches is to make sure their players are always excited to come to practice.",
-      Image: "./assets/Images/3soccerballs.jpg",
-      Published: false,
-    },
-  ]);
+  const [blogItems, setBlogItems] = useState([]);
+
+  useEffect(() =>{
+    getThePublishedItems();
+  }, [])
+
+  const getThePublishedItems = async () =>{
+    let publishedItems = await getPublishedBlogItems();
+    console.log(publishedItems)
+    setBlogItems(publishedItems)
+  }
 
   return (
     <Container>
       <Row>
         <Col>
           {blogItems.map((item, i) => (
-            <div key={item.Id}>
+            <div key={i}>
             { i % 2 == 0 ? (
             <Row style={{border: 'solid'}}>
               <Col md={6}>
                 <Row>
-                  <Col md={12} className="d-flex justify-content-center">Title</Col>
+                  <Col md={12} className="d-flex justify-content-center"><h2>{item.title}</h2></Col>
                   <Col md={12} style={{border: 'solid'}}>
                     <Row>
-                      <Col md={6} className="d-flex justify-content-center">Publisher Name</Col>
-                      <Col md={6} style={{border: 'solid'}}>Date</Col>
+                      <Col md={6} className="d-flex justify-content-center">{item.publisherName}</Col>
+                      <Col md={6} style={{border: 'solid'}}><p>{item.date}</p></Col>
                     </Row>
                   </Col>
                 </Row>
-                <Col md={12} className="d-flex justify-content-center">Image</Col>
+                <Col md={12} className="d-flex justify-content-center"><img src={item.image}/></Col>
               </Col>
-              <Col md={6} className="d-flex justify-content-center" style={{border: 'solid'}}>Des</Col>
+              <Col md={6} className="d-flex justify-content-center" style={{border: 'solid'}}><h2>{item.description}</h2></Col>
             </Row>)
                 
             :
            
-            <Row style={{border: 'solid'}}>
-            <Col md={6} className="d-flex justify-content-center" style={{border: 'solid'}}>Des</Col>
+            <Row key={i} style={{border: 'solid'}}>
+            <Col md={6} className="d-flex justify-content-center" style={{border: 'solid'}}><h2>{item.description}</h2></Col>
               <Col md={6}>
                 <Row>
-                  <Col md={12} className="d-flex justify-content-center">Title</Col>
+                  <Col md={12} className="d-flex justify-content-center"><h2>{item.title}</h2></Col>
                   <Col md={12} style={{border: 'solid'}}>
                     <Row>
-                      <Col md={6} className="d-flex justify-content-center">Publisher Name</Col>
-                      <Col md={6} style={{border: 'solid'}}>Date</Col>
+                      <Col md={6} className="d-flex justify-content-center">{item.publisherName}</Col>
+                      <Col md={6} style={{border: 'solid'}}><p>{item.date}</p></Col>
                     </Row>
                   </Col>
                 </Row>
-                <Col md={12} className="d-flex justify-content-center">Image</Col>          
+                <Col md={12} className="d-flex justify-content-center"><img style={{width: '100%'}} src={item.image}/></Col>          
               </Col>  
             </Row>
+      
              }
               </div>
           ))}

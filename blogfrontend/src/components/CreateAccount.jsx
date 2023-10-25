@@ -7,13 +7,13 @@ const CreateAccount = () => {
     const [Username, setUsername] = useState('');
     const [Password, setPassword] = useState('');
 
-    const handleUser = (e) => setUsername(e.target.value);
-    const handlePassword = (e) => setPassword(e.target.value);
+    // const handleUser = (e) => setUsername(e.target.value);
+    // const handlePassword = (e) => setPassword(e.target.value);
     const handleSubmit = () => {
         let userData ={
             Id: 0,
-            Username: Username,
-            Password: Password
+            Username,
+            Password
         }
 
        createAccount(userData);
@@ -29,12 +29,12 @@ const CreateAccount = () => {
     <h1 className='text-center'>Create Account</h1>
       <Form.Group className="mb-3" controlId="Username">
         <Form.Label>Username</Form.Label>
-        <Form.Control type="text" placeholder="Enter username" onChange={handleUser}/>
+        <Form.Control type="text" placeholder="Enter username" onChange={({target}) => setUsername(target.value)}/>
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="formBasicPassword">
         <Form.Label>Password</Form.Label>
-        <Form.Control type="password" placeholder="Password" onChange={handlePassword} />
+        <Form.Control type="password" placeholder="Password" onChange={({target}) => setPassword(target.value)} />
       </Form.Group>
      
       <Button variant="outline-primary"  onClick={handleSubmit}>

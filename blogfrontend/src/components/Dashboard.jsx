@@ -1,202 +1,277 @@
-import { Button, Container, Modal, Form, Row, Col, Accordion, ListGroup } from "react-bootstrap/";
+import {
+  Button,
+  Container,
+  Modal,
+  Form,
+  Row,
+  Col,
+  Accordion,
+  ListGroup,
+  Spinner,
+} from "react-bootstrap/";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { LoggedInData, checkToken } from "../Services/DataService";
+import {
+  AddBlogItems,
+  GetBlogItemsByUserId,
+  LoggedInData,
+  checkToken,
+  getBlogItems,
+  updateBlogItems,
+} from "../Services/DataService";
 
 const Dashboard = () => {
-
   let navigate = useNavigate();
 
   useEffect(() => {
-    //useEffect is the first thing that fires on load 
+    //useEffect is the first thing that fires on load
     //put any logic we want to fire on onload
     //our effect will fire if we have a change in the state in our dependancy
     //rerouting the user to the Login page if no user Token
-    if(!checkToken())
-    {
+    if (!checkToken()) {
       navigate("/Login");
+    } else {
+      setTimeout(async () => {
+        let loggedInData = LoggedInData();
+        setUserId(loggedInData.userId)
+        setPublishername(loggedInData.publisherName)
+        console.log(loggedInData);
+        let userBlogItems = await GetBlogItemsByUserId(loggedInData.userId);
+        setBlogItems(userBlogItems);
+        
+        console.log(userBlogItems);
+        setIsLoading(false);
+      }, 1000);
     }
-    let userInfo = LoggedInData();
-    console.log(userInfo);
-   
-  }, [])
+    // let userInfo = LoggedInData();
+    // console.log(userInfo);
+  }, []);
 
   //functions
-  const handleSetTitle = (e) => setBlogTitle(e.target.value)
-  const handleDescription = (e) => setBlogDescription(e.target.value)
-  const handleTag = (e) => setBlogTags(e.target.value)
-  const handleCategory = (e) => setBlogCategory(e.target.value)
+  const handleSetTitle = (e) => setBlogTitle(e.target.value);
+  const handleDescription = (e) => setBlogDescription(e.target.value);
+  const handleTag = (e) => setBlogTags(e.target.value);
+  const handleCategory = (e) => setBlogCategory(e.target.value);
   // const handleSaveImage = ({target}) => setBlogImage(target.files[0])
   const handleClose = () => setShow(false);
-  const handleShow = (e) => {
-    setShow(true)
-    if(e.target.textContent === 'Add Blog Item'){
-      setEdit(false)
-      setBlogTitle('')
-      setBlogDescription('')
-      setBlogCategory('')
+  const handleShow = (
+    e,
+    {
+      id,
+      userId,
+      publisherName,
+      title,
+      image,
+      description,
+      category,
+      tag,
+      isDeleted,
+      isPublished,
     }
-    else{
+  ) => {
+    setShow(true);
+    if (e.target.textContent === "Add Blog Item") {
+      setEdit(false);
+    } else {
       setEdit(true);
-      setBlogTitle('My Awesome Title')
-      setBlogDescription('My awesome description')
-      setBlogCategory('Fitness')
     }
+    setBlogID(id);
+    setUserId(userId);
+    setPublishername(publisherName);
+    setBlogTitle(title);
+    setBlogDescription(description);
+    setBlogImage(image);
+    setBlogCategory(category);
+    setBlogTags(tag);
+    setIsDeleted(isDeleted);
+    setIsPublished(isPublished);
+    // console.log(blogData)
   };
-  
+
+  const [blogUserId, setUserId] = useState(0);
+  const [blogPublishername, setPublishername] = useState("");
 
   //create useStaes for our forms
-  const [blogTitle, setBlogTitle] = useState('');
-  const [blogImage, setBlogImage] = useState('');
-  const [blogDescription, setBlogDescription] = useState('');
-  const [blogCategory, setBlogCategory] = useState('');
-  const [blogTags, setBlogTags] = useState('');
-  // const [userId, setuserId] = useState(0);
-  // const [Publishername, setPublishername] = useState('');
-  
+  const [blogTitle, setBlogTitle] = useState("");
+  const [blogImage, setBlogImage] = useState("");
+  const [blogDescription, setBlogDescription] = useState("");
+  const [blogCategory, setBlogCategory] = useState("");
+  const [blogTags, setBlogTags] = useState("");
+  const [blogID, setBlogID] = useState(0);
+  // const [userId, setUserId] = useState(0);
+  // const [Publishername, setPublishername] = useState("");
+
   //bools
   const [show, setShow] = useState(false);
   const [edit, setEdit] = useState(false);
-  
-  const [blogItems, setBlogItems] = useState([
-    {
-      Id: 1,
-      Title: "Top Finishing and Crossing Drills",
-      Publisher: "anonymous",
-      Date: "01-13-2022",
-      Text: "Developing finishing and crossing skills is an important aspect of soccer that can greatly constribute to your player.",
-      Image: 
-            "./assets/Images/3soccerballs.jpg",
-      Published: true
-      
-    },
-    {
-      Id: 2,
-      Title: "6 Soccer Drills to Work on Defense",
-      Publisher: "anonymous",
-      Date: "01-14-2022",
-      Text: "A strong defense is the backbone of any successful soccer team",
-      Image: 
-            "./assets/Images/3soccerballs.jpg",
-      Published: true
-    },
-    {
-      Id: 3,
-      Title: "5 Small Side Games",
-      Publisher: "anonymous",
-      Date: "01-15-2022",
-      Text: "Small-sided games create a fast-paced and intense environment.",
-      Image: 
-            "./assets/Images/3soccerballs.jpg",
-      Published: true
-    },
-    {
-      Id: 4,
-      Title: "5 Fun 1 V 1 Youth Soccer Activites",
-      Publisher: "anonymous",
-      Date: "01-15-2022",
-      Text: "One of the best ways to naturally bring out the competitive nature.",
-      Image: 
-            "./assets/Images/3soccerballs.jpg",
-      Published: false
-    },
-    {
-      Id: 5,
-      Title: "5 Fun warm up soccer drills",
-      Publisher: "anonymous",
-      Date: "01-15-2022",
-      Text: "One of the challenges for youth soccer coaches is to make sure their players are always excited to come to practice.",
-      Image: 
-            "./assets/Images/3soccerballs.jpg",
-      Published: false
-    },
-  ]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isDeleted, setIsDeleted] = useState(false);
+  const [isPublished, setIsPublished] = useState(false);
 
-  const handleSaveWithPublish = () =>{
+  const [blogItems, setBlogItems] = useState([]);
 
-    console.log('clicked')
-
-    let {publisherName, userId} = LoggedInData();
+  const handleSave = async ({ target: { textContent } }) => {
+    // let { publisherName, userId } = LoggedInData();
 
     const Published = {
-      Id: 0,
-      UserId: userId,
-      PublisherName: publisherName,
+      Id: blogID,
+      UserId: blogUserId,
+      PublisherName: blogPublishername,
       Title: blogTitle,
       Image: blogImage,
       Description: blogDescription,
       Date: new Date(),
       Category: blogCategory,
       Tag: blogTags,
-      IsPublished: true,
-      IsDeleted: false
-    }
-   
-    console.log(Published)
+      IsPublished:
+        textContent == "Save" || textContent == "Save Changes" ? false : true,
+      IsDeleted: false,
+    };
+
+    console.log(Published);
     handleClose();
 
-
-  }
-  const handleSaveWithUnpublish = () =>{
-
-    let {publisherName, userId} = LoggedInData();
-
-    const notPublished = {
-      Id: 0,
-      UserId: userId,
-      PublisherName: publisherName,
-      Title: blogTitle,
-      Image: blogImage,
-      Description: blogDescription,
-      Date: new Date(),
-      Category: blogCategory,
-      Tag: blogTags,
-      IsPublished: false,
-      IsDeleted: false
+    let result = false;
+    if (edit) {
+      result = await updateBlogItems(Published);
+    } else {
+      result = await AddBlogItems(Published);
     }
-    console.log(notPublished)
-    handleClose();
+
+    // let result = await AddBlogItems(Published);
+    if (result) {
+      let userBlogItems = await GetBlogItemsByUserId(blogUserId);
+      setBlogItems(userBlogItems);
+      console.log(userBlogItems, "yes it works");
+    }
+    else{
+      alert(`Blog item not ${edit? "updated": "added"}`)
+    }
+  };
+
+  // const handleSaveWithUnpublish = async () => {
+  //   let { publisherName, userId } = LoggedInData();
+
+  //   const notPublished = {
+  //     Id: 0,
+  //     UserId: userId,
+  //     PublisherName: publisherName,
+  //     Title: blogTitle,
+  //     Image: blogImage,
+  //     Description: blogDescription,
+  //     Date: new Date(),
+  //     Category: blogCategory,
+  //     Tag: blogTags,
+  //     IsPublished: false,
+  //     IsDeleted: false,
+  //   };
+  //   console.log(notPublished);
+  //   handleClose();
+  //   let result = await AddBlogItems(notPublished);
+  //   if (result) {
+  //     let userBlogItems = await GetBlogItemsByUserId(userId);
+  //     setBlogItems(userBlogItems);
+  //   }
+  //   AddBlogItems(notPublished);
+  // };
+
+  const handlePublish = async (item) => {
+    console.log("first");
+    item.isPublished = !item.isPublished;
+
+    let result = await updateBlogItems(item);
+
+    if (result) {
+      let userBlogItems = await GetBlogItemsByUserId(blogUserId);
+      setBlogItems(userBlogItems);
+      console.log(userBlogItems);
+    } else alert(`Blog item not ${edit ? "updated" : "added"}`);
+  };
+
+  //handle delete
+  const handleDelete  = async (item) =>{
+    console.log("first");
+    item.isDeleted = !item.isDeleted;
+
+    let result = await updateBlogItems(item);
+
+    if (result) {
+      let userBlogItems = await GetBlogItemsByUserId(blogUserId);
+      setBlogItems(userBlogItems);
+      console.log(userBlogItems);
+    } else alert(`Blog item not ${edit ? "updated" : "added"}`);
   }
 
-  const handleImage = async (e) =>{
+  //handle our imag
+  const handleImage = async (e) => {
     let file = e.target.files[0];
     const reader = new FileReader();
     reader.onloadend = () => {
-      console.log(reader.result)
-    }
+      console.log(reader.result);
+      setBlogImage(reader.result);
+    };
     reader.readAsDataURL(file);
-  }
-
+  };
 
   return (
     <>
       <Container>
-        <Button className="me-3" variant="outline-primary" onClick={handleShow}>
+        <Button
+          className="me-3"
+          variant="outline-primary"
+          onClick={(e) =>
+            handleShow(e, {
+              id: 0,
+              userId: blogUserId,
+              publisherName: blogPublishername,
+              image: "",
+              title: "",
+              description: "",
+              category: "",
+              tag: "",
+              isDeleted: false,
+              isPublished: false,
+            })
+          }
+        >
           Add Blog Item
         </Button>
         <Modal show={show} onHide={handleClose}>
           <Modal.Header style={{ background: "#2f2f2f" }} closeButton>
             <Modal.Title style={{ background: "#2f2f2f" }}>
-             {edit ? 'Edit' : 'Add'} Blog Item
+              {edit ? "Edit" : "Add"} Blog Item
             </Modal.Title>
           </Modal.Header>
           <Modal.Body style={{ background: "#2f2f2f" }}>
-
             <Form>
               <Form.Group className="mb-3" controlId="Title">
                 <Form.Label>Title</Form.Label>
-                <Form.Control type="text" placeholder="Enter Title" value={blogTitle} onChange={handleSetTitle}/>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter Title"
+                  value={blogTitle}
+                  onChange={handleSetTitle}
+                />
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="Description">
                 <Form.Label>Description</Form.Label>
-                <Form.Control type="text" placeholder="Enter Description" value={blogDescription} onChange={handleDescription}/>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter Description"
+                  value={blogDescription}
+                  onChange={handleDescription}
+                />
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="Category">
-              <Form.Label>Category</Form.Label>
-                <Form.Select aria-label="Default select example" value={blogCategory} onChange={handleCategory}>
+                <Form.Label>Category</Form.Label>
+                <Form.Select
+                  aria-label="Default select example"
+                  value={blogCategory}
+                  onChange={handleCategory}
+                >
                   <option>Select Category</option>
                   <option value="Food">Food</option>
                   <option value="Fitness">Fitness</option>
@@ -207,56 +282,119 @@ const Dashboard = () => {
 
               <Form.Group className="mb-3" controlId="Tags">
                 <Form.Label>Tags</Form.Label>
-                <Form.Control type="text" placeholder="Enter Tags" value={blogTags} onChange={handleTag}/>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter Tags"
+                  value={blogTags}
+                  onChange={handleTag}
+                />
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="Image">
                 <Form.Label>Pick an Image</Form.Label>
-                <Form.Control type="file" placeholder="SeleteImage from file" accept="image/png, image/jpg"  onChange={handleImage}/>
+                <Form.Control
+                  type="file"
+                  placeholder="SeleteImage from file"
+                  accept="image/png, image/jpg"
+                  onChange={handleImage}
+                />
               </Form.Group>
-
-             
             </Form>
           </Modal.Body>
           <Modal.Footer style={{ background: "#2f2f2f" }}>
             <Button variant="outline-secondary" onClick={handleClose}>
               Cancel
             </Button>
-            <Button variant="outline-primary" onClick={handleSaveWithUnpublish}>
-              {edit ? 'Save Changes' : 'Save'}
+            <Button variant="outline-primary" onClick={handleSave}>
+              {edit ? "Save Changes" : "Save"}
             </Button>
-            <Button variant="outline-primary" onClick={handleSaveWithPublish}>
-            {edit ? 'Save Changes' : 'Save'} and Publish
+            <Button variant="outline-primary" onClick={handleSave}>
+              {edit ? "Save Changes" : "Save"} and Publish
             </Button>
           </Modal.Footer>
         </Modal>
-        <Button variant="outline-primary" onClick={handleShow}>Edit Blog Item</Button>{" "}
-    <Row>
-      <Col>
-      <Accordion defaultActiveKey={['0', '1']} alwaysOpen>
-      <Accordion.Item eventKey="0">
-        <Accordion.Header>Published</Accordion.Header>
-        <Accordion.Body style={{backgroundColor: "#3f3f3f", color: "azure"}}>
-         {blogItems.map(x => x.Published ? <ListGroup key={x.Title}>{x.Title}
-          <Col className="d-flex justify-content-end">
-         <Button variant="outline-danger mx-2">Delete</Button>
-         <Button variant="outline-info mx-2">Edit</Button>
-         <Button variant="outline-primary mx-2">Publish</Button>
-         </Col>
-         </ListGroup> : null)}
-         
-        </Accordion.Body>
-      </Accordion.Item>
-      <Accordion.Item eventKey="1">
-        <Accordion.Header>Unpublished</Accordion.Header>
-        <Accordion.Body style={{backgroundColor: "#3f3f3f", color: "azure"}}>
-        {blogItems.map(x => !x.Published ? <ListGroup key={x.Title}>{x.Title}</ListGroup> : null)}
-        </Accordion.Body>
-      </Accordion.Item>
-    </Accordion>
-      </Col>
-    </Row>
-
+        <Button variant="outline-primary" onClick={handleShow}>
+          Edit Blog Item
+        </Button>
+        <Row>
+          <Col>
+            {isLoading ? (
+              <>
+                <h1>Loading ....</h1>{" "}
+                <Spinner animation="border" variant="info" />
+              </>
+            ) : blogItems.length == 0 ? (
+              <h1 className="text-center">
+                No Blog Items. Add a Blog Item Above
+              </h1>
+            ) : (
+              <Accordion defaultActiveKey={["0", "1"]} alwaysOpen>
+                <Accordion.Item eventKey="0">
+                  <Accordion.Header>Published</Accordion.Header>
+                  <Accordion.Body
+                    style={{ backgroundColor: "#3f3f3f", color: "azure" }}
+                  >
+                    {blogItems.map((x, i) =>
+                      x.isPublished && !x.isDeleted ? (
+                        <ListGroup key={i}>
+                          {x.title}
+                          <Col className="d-flex justify-content-end">
+                            <Button variant="outline-danger mx-2" onClick={() => handleDelete(x)}>
+                              Delete
+                            </Button>
+                            <Button
+                              variant="outline-info mx-2"
+                              onClick={(e) => handleShow(e, x)}
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              variant="outline-primary mx-2"
+                              onClick={() => handlePublish(x)}
+                            >
+                              Unpublish
+                            </Button>
+                          </Col>
+                        </ListGroup>
+                      ) : null
+                    )}
+                  </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="1">
+                  <Accordion.Header>Unpublished</Accordion.Header>
+                  <Accordion.Body
+                    style={{ backgroundColor: "#3f3f3f", color: "azure" }}
+                  >
+                    {blogItems.map((x, i) =>
+                      !x.isPublished & !x.isDeleted ? (
+                        <ListGroup key={i}>
+                          {x.title}
+                          <Col className="d-flex justify-content-end">
+                            <Button variant="outline-danger mx-2" onClick={() => handleDelete(x)}>
+                              Delete
+                            </Button>
+                            <Button
+                              variant="outline-info mx-2"
+                              onClick={(e) => handleShow(e, x)}
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              variant="outline-primary mx-2"
+                              onClick={() => handlePublish(x)}
+                            >
+                              Publish
+                            </Button>
+                          </Col>
+                        </ListGroup>
+                      ) : null
+                    )}
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Accordion>
+            )}
+          </Col>
+        </Row>
       </Container>
     </>
   );
