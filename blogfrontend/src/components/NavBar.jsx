@@ -4,8 +4,9 @@ import {Link}from 'react-router-dom'
 
 const NavBar = () => {
   return (
+    <>
     <Nav
-      className='d-flex justify-content-center  my-5'
+      className='d-flex justify-content-center  mb-5 p-0'
       activeKey="/home"
       onSelect={(selectedKey) => alert(`selected ${selectedKey}`)}
     >
@@ -22,6 +23,10 @@ const NavBar = () => {
         <Nav.Link as={Link} to='/CreateAccount'>Create Account</Nav.Link>
       </Nav.Item>
     </Nav>
+
+    <hr className='line mb-5'/>
+
+    </>
   )
 }
 

@@ -13,13 +13,10 @@ function App() {
       <Container>
         <Row>
           <Col>
-            <h1 className="text-center">Our Blog</h1>
+            <h1 className="text-center myTitle mb-5 mt-5">.techNews</h1>
           </Col>
           <NavBar/>
-          {/* <Dashboard /> */}
-          {/* <BlogPage/> */}
-          {/* <CreateAccount/> */}
-          {/* <Login/> */}
+      
           <Routes>
 
               <Route path="/" element={<BlogPage/>}/>

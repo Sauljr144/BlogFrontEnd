@@ -1,7 +1,9 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { Container, Row, Col, Image } from "react-bootstrap";
+import { Container, Row, Col, Image, Carousel } from "react-bootstrap";
 import { getPublishedBlogItems } from "../Services/DataService";
+import TopCarousel from "./TopCarousel";
+
 
 const BlogPage = () => {
   const [blogItems, setBlogItems] = useState([]);
@@ -17,9 +19,12 @@ const BlogPage = () => {
   }
 
   return (
-    <Container>
+    <Container className="p-0">
+     <TopCarousel/>
       <Row>
         <Col>
+
+          
           {blogItems.map((item, i) => (
             <div key={i}>
             { i % 2 == 0 ? (
@@ -34,7 +39,7 @@ const BlogPage = () => {
                     </Row>
                   </Col>
                 </Row>
-                <Col md={12} className="d-flex justify-content-center"><img src={item.image}/></Col>
+                <Col md={12} className="d-flex justify-content-center"><img style={{width: '100%'}} src={item.image}/></Col>
               </Col>
               <Col md={6} className="d-flex justify-content-center" style={{border: 'solid'}}><h2>{item.description}</h2></Col>
             </Row>)
