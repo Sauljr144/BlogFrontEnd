@@ -10,6 +10,7 @@ const Login = () => {
 
     const [Username, setUsername] = useState('');
     const [Password, setPassword] = useState('');
+  
 
     // const handleUser = (e) => setUsername(e.target.value);
     // const handlePassword = (e) => setPassword(e.target.value);
@@ -35,7 +36,7 @@ const Login = () => {
     <div>
         
 
-    <Form style={{width: '40', marginLeft:'33%', marginRight: '33%', marginTop:'10%', backgroundColor:'lightseagreen', padding:'80px', borderRadius: 5}}>
+    <Form style={{width: '40', marginLeft:'33%', marginRight: '33%', marginTop:'10%'}}>
     <h1 className='text-center'>Login</h1>
       <Form.Group className="mb-3" controlId="Username">
         <Form.Label>Username</Form.Label>

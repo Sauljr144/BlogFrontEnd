@@ -2,16 +2,27 @@
 
 body{
     background-color: rgb(245, 239, 239);
+    font-family: 'Roboto' !important;
 }
 
-/* Top
- */
+
+
+/* Top*/
 .myTitle{
     font-family: 'Roboto Slab';
     font-size: 4rem;
     margin-top: 1rem;
     color: black;
    
+}
+
+/* nav */
+.nav-link{
+    color: black;
+}
+.nav{
+    color: black !important;
+
 }
 
 .line{
@@ -25,6 +36,28 @@ body{
     border-radius: 10px;
     opacity: 100%;
 }
+
+/* Footer */
+
+.myFooter{
+    margin-top: 200px;
+    margin-bottom: 20px;
+}
+
+h5{
+    font-family: "Roboto Slab";
+    font-size: 1.5rem;
+}
+
+h7{
+    font-size: .85rem;
+}
+
+.myCopy{
+    font-size: .75rem;
+}
+
+
 
 /* Carousel */
 h3{
@@ -42,16 +75,48 @@ h3{
 .carousel-block{
     background-color: rgb(245, 239, 239);
     color: black;
-    /* width: 300px;
-    height: 100px; */
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
 }
 
 .carousel-caption{
     bottom: 0;
+    top: 55%;
+}
+
+.carousel-indicators [data-bs-target]{
+    
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    
 }
 
 .carousel-indicators{
-    bottom: -37px;
+    justify-content: start;
+    align-items: center;
+    margin-bottom: 0;
+
+   
+}
+
+.carousel-item{
+    height: 650px;
+}
+
+.carousel-control-next, .carousel-control-prev{
+   
+    display: contents;
+   
+    
+}
+
+/* Cards */
+.card   {
+    border: none;
+    background-color: rgb(245, 239, 239);
+}
+
+.card-img-top{
+    border-radius: 12px;
 }

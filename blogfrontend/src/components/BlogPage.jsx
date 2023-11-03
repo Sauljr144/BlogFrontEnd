@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { Container, Row, Col, Image, Carousel } from "react-bootstrap";
+import { Container, Row, Col, Image, Card } from "react-bootstrap";
 import { getPublishedBlogItems } from "../Services/DataService";
 import TopCarousel from "./TopCarousel";
 
@@ -21,52 +21,21 @@ const BlogPage = () => {
   return (
     <Container className="p-0">
      <TopCarousel/>
-      <Row>
-        <Col>
-
-          
-          {blogItems.map((item, i) => (
-            <div key={i}>
-            { i % 2 == 0 ? (
-            <Row style={{border: 'solid'}}>
-              <Col md={6}>
-                <Row>
-                  <Col md={12} className="d-flex justify-content-center"><h2>{item.title}</h2></Col>
-                  <Col md={12} style={{border: 'solid'}}>
-                    <Row>
-                      <Col md={6} className="d-flex justify-content-center">{item.publisherName}</Col>
-                      <Col md={6} style={{border: 'solid'}}><p>{item.date}</p></Col>
-                    </Row>
-                  </Col>
-                </Row>
-                <Col md={12} className="d-flex justify-content-center"><img style={{width: '100%'}} src={item.image}/></Col>
-              </Col>
-              <Col md={6} className="d-flex justify-content-center" style={{border: 'solid'}}><h2>{item.description}</h2></Col>
-            </Row>)
-                
-            :
-           
-            <Row key={i} style={{border: 'solid'}}>
-            <Col md={6} className="d-flex justify-content-center" style={{border: 'solid'}}><h2>{item.description}</h2></Col>
-              <Col md={6}>
-                <Row>
-                  <Col md={12} className="d-flex justify-content-center"><h2>{item.title}</h2></Col>
-                  <Col md={12} style={{border: 'solid'}}>
-                    <Row>
-                      <Col md={6} className="d-flex justify-content-center">{item.publisherName}</Col>
-                      <Col md={6} style={{border: 'solid'}}><p>{item.date}</p></Col>
-                    </Row>
-                  </Col>
-                </Row>
-                <Col md={12} className="d-flex justify-content-center"><img style={{width: '100%'}} src={item.image}/></Col>          
-              </Col>  
-            </Row>
-      
-             }
-              </div>
-          ))}
+     <Row xs={1} md={2} className="g-4 mb-5">
+      {blogItems.map((x, i) => (
+        <Col key={i}>
+          <Card>
+            <Card.Img variant="top" src={x.image} />
+            <Card.Body>
+              <Card.Title className="mb-3 mt-2">{x.title}</Card.Title>
+              <Card.Text>
+                {x.description}
+              </Card.Text>
+            </Card.Body>
+          </Card>
         </Col>
-      </Row>
+      ))}
+    </Row>
     </Container>
   );
 };

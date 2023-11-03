@@ -28,8 +28,8 @@ const TopCarousel = () => {
       <Image src={x.image} className="carousel-img"/>
         <Carousel.Caption className="carousel-block">
           
-          <h3>{x.title}</h3>
-          <p>{x.description}</p>
+          <h3 className="mx-3 mb-3">{x.title}</h3>
+          <p className="mx-3">{x.description}</p>
         </Carousel.Caption>
       </Carousel.Item>
        

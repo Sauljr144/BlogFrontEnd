@@ -1,11 +1,13 @@
 import {React, useState} from 'react'
 import { Button, Container, Modal, Form, Row, Col, Accordion, ListGroup } from "react-bootstrap/";
 import { createAccount } from '../Services/DataService';
+import { useNavigate } from 'react-router-dom';
 
 const CreateAccount = () => {
 
     const [Username, setUsername] = useState('');
     const [Password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     // const handleUser = (e) => setUsername(e.target.value);
     // const handlePassword = (e) => setPassword(e.target.value);
@@ -17,6 +19,7 @@ const CreateAccount = () => {
         }
 
        createAccount(userData);
+       navigate("/Login")
 
     };
 
@@ -25,7 +28,7 @@ const CreateAccount = () => {
     <div>
         
 
-    <Form style={{width: '40', marginLeft:'33%', marginRight: '33%', marginTop:'10%', backgroundColor:'lightseagreen', padding:'80px', borderRadius: 5}}>
+    <Form style={{width: '40', marginLeft:'33%', marginRight: '33%', marginTop:'10%'}}>
     <h1 className='text-center'>Create Account</h1>
       <Form.Group className="mb-3" controlId="Username">
         <Form.Label>Username</Form.Label>

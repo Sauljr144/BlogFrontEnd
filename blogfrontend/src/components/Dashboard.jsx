@@ -238,12 +238,12 @@ const Dashboard = () => {
           Add Blog Item
         </Button>
         <Modal show={show} onHide={handleClose}>
-          <Modal.Header style={{ background: "#2f2f2f" }} closeButton>
-            <Modal.Title style={{ background: "#2f2f2f" }}>
+          <Modal.Header  closeButton>
+            <Modal.Title >
               {edit ? "Edit" : "Add"} Blog Item
             </Modal.Title>
           </Modal.Header>
-          <Modal.Body style={{ background: "#2f2f2f" }}>
+          <Modal.Body >
             <Form>
               <Form.Group className="mb-3" controlId="Title">
                 <Form.Label>Title</Form.Label>
@@ -301,7 +301,7 @@ const Dashboard = () => {
               </Form.Group>
             </Form>
           </Modal.Body>
-          <Modal.Footer style={{ background: "#2f2f2f" }}>
+          <Modal.Footer >
             <Button variant="outline-secondary" onClick={handleClose}>
               Cancel
             </Button>
@@ -332,7 +332,7 @@ const Dashboard = () => {
                 <Accordion.Item eventKey="0">
                   <Accordion.Header>Published</Accordion.Header>
                   <Accordion.Body
-                    style={{ backgroundColor: "#3f3f3f", color: "azure" }}
+                   
                   >
                     {blogItems.map((x, i) =>
                       x.isPublished && !x.isDeleted ? (
@@ -363,7 +363,7 @@ const Dashboard = () => {
                 <Accordion.Item eventKey="1">
                   <Accordion.Header>Unpublished</Accordion.Header>
                   <Accordion.Body
-                    style={{ backgroundColor: "#3f3f3f", color: "azure" }}
+                    
                   >
                     {blogItems.map((x, i) =>
                       !x.isPublished & !x.isDeleted ? (
